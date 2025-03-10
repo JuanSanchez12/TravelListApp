@@ -154,10 +154,12 @@ class PlanList extends StatelessWidget {
     return ListView.builder(
       itemCount: plans.length,
       itemBuilder: (context, index) {
+        Color itemColor = plans[index].isCompleted ? Colors.green : Colors.red;
         return GestureDetector(
           onLongPress: () => onUpdate(index),
           onDoubleTap: () => onRemove(index),
           child: Card(
+            color: itemColor,
             child: Dismissible(
               key: Key(index.toString()),
               direction: DismissDirection.horizontal,
