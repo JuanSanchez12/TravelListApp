@@ -18,6 +18,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class Plan {
+  String name;
+  bool isCompleted;
+
+  Plan({required this.name, this.isCompleted = false});
+}
+
 class PlanHomePage extends StatefulWidget {
   final dynamic title;
 
@@ -27,28 +34,54 @@ class PlanHomePage extends StatefulWidget {
 }
 
 class _PlanHomePageState extends State<PlanHomePage> {
+  List<Plan> plans = [];
+
+  void addPlan(String name) {
+    setState(() {
+      plans.add(Plan(name: name));
+    });
+  }
+
+  void updatePlan(int index, String newName) {
+    setState(() {
+      plans[index].name = newName;
+    });
+  }
+
+  void completePlan(int index) {
+    setState(() {
+      plans[index].isCompleted = true;
+    });
+  }
+
+  void removePlan(int index) {
+    setState(() {
+      plans.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title)
-        ),
+        title: Text(widget.title),
+      ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: 5,
+              itemCount: plans.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onLongPress: () {},
-                  onDoubleTap: () {},
+                  onLongPress: () => updatePlan(index, 'Updated Plan'),
+                  onDoubleTap: () => removePlan(index),
                   child: Dismissible(
                     key: Key(index.toString()),
-                    onDismissed: (direction) {},
+                    onDismissed: (direction) => completePlan(index),
                     child: Card(
                       child: ListTile(
-                        title: Text('Plan ${index + 1}'),
-                        subtitle: Text('Description of plan'),
+                        title: Text(plans[index].name),
+                        subtitle: Text(plans[index].isCompleted ? 'Completed' : 'Pending'),
                         trailing: Icon(Icons.calendar_today),
                       ),
                     ),
@@ -60,7 +93,7 @@ class _PlanHomePageState extends State<PlanHomePage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () => addPlan('New Plan'),
               child: Text('Create Plan'),
             ),
           )
